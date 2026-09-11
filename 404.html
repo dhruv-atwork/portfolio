@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="404 - Page not found">
+    <title>404 | Dhruv Kapoor</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #f7f7f5;
+            --panel: #ffffff;
+            --text: #171717;
+            --muted: #5f5f5f;
+            --accent: #5b21b6;
+            --border: #e5e5e5;
+        }
+
+        html[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #0f0f10;
+            --panel: #161617;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --accent: #8b5cf6;
+            --border: #2a2a2d;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            html:not([data-theme]) {
+                color-scheme: dark;
+                --bg: #0f0f10;
+                --panel: #161617;
+                --text: #f4f4f5;
+                --muted: #a1a1aa;
+                --accent: #8b5cf6;
+                --border: #2a2a2d;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.5;
+        }
+
+        main {
+            width: min(92vw, 720px);
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: clamp(2rem, 5vw, 3.5rem);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin: 0 0 0.75rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            line-height: 1;
+            letter-spacing: -0.04em;
+        }
+
+        p {
+            margin: 1rem 0 0;
+            color: var(--muted);
+            max-width: 56ch;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.75rem;
+        }
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0.8rem 1.1rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+        }
+
+        a:hover,
+        a:focus-visible {
+            transform: translateY(-1px);
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .secondary {
+            color: var(--text);
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="card" aria-labelledby="page-title">
+            <p class="eyebrow">Page not found</p>
+            <h1 id="page-title">404</h1>
+            <p>
+                The page you requested isn't available right now. If this is a placeholder resource,
+                it will be added soon.
+            </p>
+            <div class="actions">
+                <a class="primary" href="/">Back to home</a>
+                <a class="secondary" href="mailto:dhruvkapoor.atwork@gmail.com">Contact me</a>
+            </div>
+        </section>
+    </main>
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('theme');
+                var dark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+            } catch (e) {}
+        })();
+    </script>
+</body>
+</html>
