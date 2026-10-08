@@ -75,10 +75,10 @@ const portfolioData = {
         },
 
         {
-            name: "Google Cybersecurity Certificate (6/9)",
+            name: "Google Cybersecurity Certificate",
             issuer: "Coursera - Google",
-            date: "On-going",
-            credentialLink: "https://drive.google.com/drive/folders/1zGH_IbBN8is85KUfIpJl8rbI9_oZdlPg?usp=sharing"
+            date: "October 2026",
+            credentialLink: "https://coursera.org/share/c42e17ecff522518e75e1ec80313cdd6"
         }
     ],
 
