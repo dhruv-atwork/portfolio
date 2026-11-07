@@ -1,4 +1,26 @@
 // Theme Management
+function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[character]);
+}
+
+function safeExternalUrl(value) {
+    try {
+        const url = new URL(value, window.location.href);
+        if (url.protocol === 'https:' || url.protocol === 'mailto:' || url.protocol === 'tel:') {
+            return url.href;
+        }
+    } catch (error) {
+        // Invalid links are intentionally rejected.
+    }
+    return '#';
+}
+
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -73,13 +95,13 @@ function renderProjects() {
             const projectCard = document.createElement('div');
             projectCard.className = 'project-card';
             projectCard.innerHTML = `
-                <div class="project-category">${project.category}</div>
-                <h3>${project.name}</h3>
-                <p>${project.description}</p>
+                <div class="project-category">${escapeHTML(project.category)}</div>
+                <h3>${escapeHTML(project.name)}</h3>
+                <p>${escapeHTML(project.description)}</p>
                 <div class="project-tech">
-                    ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                    ${project.technologies.map(tech => `<span class="tech-tag">${escapeHTML(tech)}</span>`).join('')}
                 </div>
-                <a href="${project.link}" target="_blank" rel="noopener noreferrer" class="btn btn-small btn-primary project-link">View on GitHub</a>
+                <a href="${safeExternalUrl(project.link)}" target="_blank" rel="noopener noreferrer" class="btn btn-small btn-primary project-link">View on GitHub</a>
             `;
             projectGrid.appendChild(projectCard);
         });
@@ -108,15 +130,15 @@ function renderExperience() {
     
     experienceList.innerHTML = portfolioData.experience.map(exp => `
         <div class="experience-item">
-            <h3>${exp.role}</h3>
+            <h3>${escapeHTML(exp.role)}</h3>
             <div class="experience-meta">
-                <span>${exp.organization}</span>
+                <span>${escapeHTML(exp.organization)}</span>
                 <span>•</span>
-                <span>${exp.date}</span>
+                <span>${escapeHTML(exp.date)}</span>
             </div>
-            <p>${exp.description}</p>
+            <p>${escapeHTML(exp.description)}</p>
             ${exp.skills ? `<div class="experience-skills">
-                ${exp.skills.map(skill => `<span class="experience-skill">${skill}</span>`).join('')}
+                ${exp.skills.map(skill => `<span class="experience-skill">${escapeHTML(skill)}</span>`).join('')}
             </div>` : ''}
         </div>
     `).join('');
@@ -129,16 +151,16 @@ function renderCertifications() {
     if (portfolioData.certifications.length === 0 || 
         (portfolioData.certifications.length === 1 && 
          portfolioData.certifications[0].name.includes('[CERTIFICATION NAME]'))) {
-        certificationsGrid.innerHTML = '<p class="placeholder-text" style="grid-column: 1/-1; text-align: center;">No certifications added yet. Edit data.js to add your certifications.</p>';
+        certificationsGrid.innerHTML = '<p class="placeholder-text certification-empty">No certifications added yet. Edit data.js to add your certifications.</p>';
         return;
     }
     
     certificationsGrid.innerHTML = portfolioData.certifications.map(cert => `
         <div class="certification-card">
-            <h3>${cert.name}</h3>
-            <p class="certification-issuer">${cert.issuer}</p>
-            <p class="certification-date">${cert.date}</p>
-            <a href="${cert.credentialLink}" target="_blank" rel="noopener noreferrer" class="btn btn-small btn-primary">View Credential</a>
+            <h3>${escapeHTML(cert.name)}</h3>
+            <p class="certification-issuer">${escapeHTML(cert.issuer)}</p>
+            <p class="certification-date">${escapeHTML(cert.date)}</p>
+            <a href="${safeExternalUrl(cert.credentialLink)}" target="_blank" rel="noopener noreferrer" class="btn btn-small btn-primary">View Credential</a>
         </div>
     `).join('');
 }
@@ -151,70 +173,32 @@ function updateLabsStats() {
     document.getElementById('htb-rank').textContent = portfolioData.labs.hackthebox.rank;
 }
 
-// Resume Preview Rendering
-function renderResumePreview() {
-    const resumePreview = document.getElementById('resumePreview');
-    
-    const preview = `
-        <div class="resume-summary">
-            <div class="resume-header">
-                <h3>Dhruv Kapoor</h3>
-                <p class="resume-title">Cybersecurity Student | Penetration Testing</p>
-                <p class="resume-contact">📧 dhruvkapoor.atwork@gmail.com • 📱 +91-93152-78049 • 🔗 GitHub • 🔗 LinkedIn</p>
-            </div>
-            
-            <div class="resume-section">
-                <h4>Professional Summary</h4>
-                <p>Cybersecurity student focused on penetration testing, ethical hacking, and red teaming. Building practical security tools and developing hands-on offensive security skills through lab work and practical projects.</p>
-            </div>
-            
-            <div class="resume-section">
-                <h4>Core Skills</h4>
-                <div class="resume-skills">
-                    <div class="skill-group">
-                        <span class="skill-label">Security:</span>
-                        <span>Penetration Testing, Web App Security, Network Security, Vulnerability Assessment</span>
-                    </div>
-                    <div class="skill-group">
-                        <span class="skill-label">Tools:</span>
-                        <span>Kali Linux, Nmap, Burp Suite, Wireshark, Metasploit, Git</span>
-                    </div>
-                    <div class="skill-group">
-                        <span class="skill-label">Languages:</span>
-                        <span>Python, Bash, C/C++</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="resume-section">
-                <h4>Experience</h4>
-                ${portfolioData.experience.length > 0 ? 
-                    portfolioData.experience.map(exp => `
-                        <div class="resume-item">
-                            <div class="resume-item-header">
-                                <span class="resume-role">${exp.role}</span>
-                                <span class="resume-date">${exp.date}</span>
-                            </div>
-                            <p class="resume-org">${exp.organization}</p>
-                            <p>${exp.description}</p>
-                        </div>
-                    `).join('')
-                    : '<p class="resume-placeholder">No experience added yet</p>'
-                }
-            </div>
-            
-            <div class="resume-section">
-                <h4>Projects & Hands-on Labs</h4>
-                <p><strong>TryHackMe:</strong> ${portfolioData.labs.tryhackme.roomsCompleted} rooms completed • Rank: ${portfolioData.labs.tryhackme.rank}</p>
-                <p><strong>Hack The Box:</strong> ${portfolioData.labs.hackthebox.machinesCompleted} machines completed • Rank: ${portfolioData.labs.hackthebox.rank}</p>
-                <p><strong>Projects:</strong> ${portfolioData.projects.length} projects including security tools, write-ups, and research</p>
-            </div>
-            
-            <p class="resume-note">📄 Full resume PDF available for download above</p>
-        </div>
-    `;
-    
-    resumePreview.innerHTML = preview;
+// Resume PDF preview
+function renderResumePdf() {
+    const preview = document.getElementById('portfolioPdfPreview');
+    const canvas = document.getElementById('portfolioPdfCanvas');
+    const status = document.getElementById('portfolioPdfStatus');
+
+    if (!preview || !canvas || !window.pdfjsLib) return;
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    pdfjsLib.getDocument('Dhruv_Kapoor_Resume_Cybersec.pdf').promise
+        .then(pdf => pdf.getPage(1))
+        .then(page => {
+            const context = canvas.getContext('2d');
+            const baseViewport = page.getViewport({ scale: 1 });
+            const availableWidth = Math.max(280, preview.clientWidth - 32);
+            const scale = Math.min(1.6, availableWidth / baseViewport.width);
+            const viewport = page.getViewport({ scale });
+
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            return page.render({ canvasContext: context, viewport }).promise;
+        })
+        .then(() => status.remove())
+        .catch(() => {
+            status.textContent = 'Preview unavailable. Use the resume package button below.';
+        });
 }
 
 // Smooth scroll enhancement
@@ -271,6 +255,7 @@ function init() {
     renderExperience();
     renderCertifications();
     updateLabsStats();
+    renderResumePdf();
     initIntersectionObserver();
 }
 
