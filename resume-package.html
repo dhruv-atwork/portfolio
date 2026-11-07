@@ -1,41 +1,38 @@
-(function () {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    let isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-    const toggle = document.getElementById('packageThemeToggle');
-    const icon = toggle.querySelector('.theme-icon');
-
-    function updateTheme() {
-        document.body.classList.toggle('dark-mode', isDark);
-        icon.textContent = isDark ? 'Light' : 'Dark';
-        toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-    }
-
-    updateTheme();
-    toggle.addEventListener('click', function () {
-        isDark = !isDark;
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateTheme();
-    });
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    pdfjsLib.getDocument('Dhruv_Kapoor_Resume_Cybersec.pdf').promise
-        .then(pdf => pdf.getPage(1))
-        .then(page => {
-            const canvas = document.getElementById('pdfCanvas');
-            const context = canvas.getContext('2d');
-            const containerWidth = document.getElementById('pdfPreview').clientWidth - 32;
-            const baseViewport = page.getViewport({ scale: 1 });
-            const scale = Math.min(1.6, Math.max(0.5, containerWidth / baseViewport.width));
-            const viewport = page.getViewport({ scale });
-
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            return page.render({ canvasContext: context, viewport }).promise;
-        })
-        .then(() => document.getElementById('pdfStatus').remove())
-        .catch(() => {
-            document.getElementById('pdfStatus').textContent =
-                'Preview unavailable. Use the download options below.';
-        });
-}());
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self'; img-src 'self' data:; worker-src 'self' https://cdnjs.cloudflare.com blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
+  <title>Dhruv Kapoor | Resume Package</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
+</head>
+<body>
+  <main class="resume-package-page">
+    <div class="resume-package-toolbar">
+      <a href="index.html" class="resume-back-link">← Back to portfolio</a>
+      <button class="theme-toggle package-theme-toggle" id="packageThemeToggle" type="button" aria-label="Toggle dark mode">
+        <span class="theme-icon">Dark</span>
+      </button>
+    </div>
+    <div class="resume-package-header">
+      <p class="eyebrow">Resume package</p>
+      <h1>Dhruv Kapoor</h1>
+      <p>Access the resume in PDF and LaTeX formats, or download both files together.</p>
+    </div>
+    <div class="resume-package-preview" id="pdfPreview" aria-label="Resume PDF preview">
+      <canvas id="pdfCanvas"></canvas>
+      <p id="pdfStatus">Loading resume preview...</p>
+    </div>
+    <div class="resume-package-actions">
+      <a href="Dhruv_Kapoor_Resume_Package.zip" class="btn btn-primary" download="Dhruv_Kapoor_Resume_Package.zip">Download PDF + LaTeX (.zip)</a>
+      <a href="Dhruv_Kapoor_Resume_Cybersec.pdf" class="btn btn-secondary" download="Dhruv_Kapoor_Resume_Cybersec.pdf">Download PDF</a>
+      <a href="Dhruv_Kapoor_Resume_Cybersec.tex" class="btn btn-secondary" download="Dhruv_Kapoor_Resume_Cybersec.tex">Download LaTeX</a>
+    </div>
+  </main>
+  <script src="resume-package.js"></script>
+</body>
+</html>
