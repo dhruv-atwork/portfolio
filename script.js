@@ -42,9 +42,9 @@ function toggleTheme() {
 function updateThemeIcon() {
     const icon = document.querySelector('.theme-icon');
     if (document.body.classList.contains('dark-mode')) {
-        icon.textContent = '☀️';
+        icon.textContent = 'Light';
     } else {
-        icon.textContent = '🌙';
+        icon.textContent = 'Dark';
     }
 }
 
