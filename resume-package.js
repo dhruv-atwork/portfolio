@@ -7,7 +7,7 @@
 
     function updateTheme() {
         document.body.classList.toggle('dark-mode', isDark);
-        icon.textContent = isDark ? '☀️' : '🌙';
+        icon.textContent = isDark ? 'Light' : 'Dark';
         toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
     }
 
